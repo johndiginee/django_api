@@ -1,16 +1,20 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from .models import TestModel
-from django.forms.models import model_to_dict
+from .serializers import SimpleSerializer
 #from django.views.decorators.csrf import csrf_exempt
 
 # @csrf_exempt
-class simple(APIView):
+class Simple(APIView):
     '''
         Cloud-based views
     '''
     def post(self, request):
-        # Creating data
+        ''' Validating data using Serializer '''
+        serializer = SimpleSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        ''' Creating data '''
         new_test_content = TestModel.objects.create(
             name = request.data["name"],
             description = request.data["description"],
@@ -18,9 +22,8 @@ class simple(APIView):
             is_alive = request.data["is_alive"],
             amount = request.data["amount"]
         )
-        return JsonResponse({"data": model_to_dict(new_test_content)})
+        return JsonResponse({"data": SimpleSerializer(new_test_content).data})
 
     def get(self, request):
-        content = TestModel.objects.all().values()
-        print(content)
-        return JsonResponse({"data": list(content)})
+        content = TestModel.objects.all()
+        return JsonResponse({"data": SimpleSerializer(content, many=True).data})

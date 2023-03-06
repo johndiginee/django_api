@@ -1,16 +1,11 @@
 from rest_framework import serializers
 
-
-class SimObject():
-    def __init__(self, name):
-        self.name = name
-
-
-class SimpleObjectSerializer(serializers.Serializer):
+class SimpleSerializer(serializers.Serializer):
     name = serializers.CharField()
-
-
-def run_data():
-    simple_var = SimObject("Kenneth")
-    simple_var_serializer = SimpleObjectSerializer(simple_var)
-    print(simple_var_serializer.data)
+    description = serializers.CharField()
+    phone_number = serializers.IntegerField()
+    is_alive = serializers.BooleanField()
+    amount = serializers.FloatField()
+    extra_name = serializers.CharField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
