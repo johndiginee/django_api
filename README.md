@@ -1,4 +1,4 @@
-## My journey to explore the tales of Django Rest Framework
+## My journey to explore the tales of Django Rest Framework Version #1
 Django REST framework is a powerful and flexible toolkit for building Web APIs.
 
 ## Tech Stack
