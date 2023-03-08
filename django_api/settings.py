@@ -41,8 +41,11 @@ INSTALLED_APPS = [
     'test_app',
     'rest_framework',
     'django_seed',
-    'debug_toolbar'
+    'debug_toolbar',
+    'user'
 ]
+
+AUTH_USER_MODEL = "user.CustomUser"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
