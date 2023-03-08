@@ -8,3 +8,5 @@ Django REST framework is a powerful and flexible toolkit for building Web APIs.
 * Django REST Framework
 * Django Debug Toolbar
 * Python Decouple
+
+<img src="/Users/johndiginee/Desktop/Screenshot 2023-03-08 at 11.01.36 AM.png" alt="" />
