@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 
 class CustomUserManager(BaseUserManager):
 
-    def __create_user(self, email, password, **extra_fields):
+    def _create_user(self, email, password, **extra_fields):
         """Overide default user."""
         if not email:
             raise ValueError("Email field is requied")
