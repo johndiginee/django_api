@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'test_app',
     'rest_framework',
+    'gateway',
     'django_seed',
     'debug_toolbar',
     'user'
