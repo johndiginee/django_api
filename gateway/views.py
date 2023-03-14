@@ -6,7 +6,7 @@ from django.conf import settings
 import random
 import string
 from rest_framework.views import APIView
-from .serializers import LoginSerializer, RegisterSerializer
+from .serializers import LoginSerializer, RegisterSerializer, RefreshSerializer
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 
@@ -42,6 +42,8 @@ class LoginView(APIView):
         if not user:
             return Response({"error": "Invaild email or password"}, status="400")
 
+        Jwt.objects.filter(user_id=user.id).delete()
+
         access = get_access_token({"user_id": user.id})
         refresh = get_refresh_token()
 
@@ -62,3 +64,43 @@ class RegisterView(APIView):
         CustomUser.objects._create_user(**serializer.validated_data)
 
         return Response({"success": "User created."})
+
+def verify_token(token):
+    # decode the token
+    try:
+        decoded_data = jwt.decode(token, settings.SECRET_KEY, algorithm="HS256")
+    except Exception:
+        return None
+    # check if token has expire
+    exp = decoded_data["exp"]
+
+    if datetime.now().timestamp() > exp:
+        return None
+    
+    return decoded_data
+
+
+class RefreshView(APIView):
+    serializer_class = RefreshSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            active_jwt = Jwt.objects.get(
+                refresh=serializer.validated_data["refresh"])
+        except Jwt.DoesNotExist:
+            return Response({"error": "refresh token not found"}, status="400")
+
+        if not verify_token(serializer.validated_data["refresh"]):
+            return Response({"error": "Token is invaild or has expired"})
+        
+        access = get_access_token({"user_id": active_jwt.user.id})
+        refresh = get_refresh_token()
+
+        active_jwt.access = access.decode()
+        active_jwt.refresh = refresh.decode()
+        active_jwt.save()
+
+        return Response({"access": access, "refresh": refresh})
